@@ -35,7 +35,7 @@
         <el-input type="textarea" v-model="form.desc"></el-input>
     </el-form-item>
     <el-form-item>
-        <el-button type="primary" native-type="submit">立即创建</el-button>
+        <el-button type="primary" native-type="submit">修改</el-button>
         <el-button>取消</el-button>
     </el-form-item>
     </el-form>
@@ -57,17 +57,27 @@ export default {
         }
       }
     },
+    created () {
+        this.fetch()
+    },
     methods: {
-      onSubmit() {
-        this.$http.post('pets',this.form).then(res => {
-          this.$message({
-            message: '宠物信息录入成功！',
-            type: 'success'
-          })
-          console.log(res.data)
+      fetch () {
+        this.$http.get(`pet/${this.$route.params.id}`).then(res => {
+            this.form = res.data
         })
-        // 路由跳转到index
-        this.$router.push('/pet/index')
+      },
+      onSubmit() {
+        this.$http.put(`${this.$route.params.id}/edit`, this.form).then(res => {
+          if (res.status === 200) {
+            this.$message({
+                message: '修改宠物信息成功！',
+                type: 'success'
+            })
+            // 路由跳转到index
+           this.$router.push('/pet/index')
+          }
+        //   console.log(res.data)
+        })
       }
     }
 }
